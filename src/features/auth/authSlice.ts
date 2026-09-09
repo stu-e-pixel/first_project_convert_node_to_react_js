@@ -62,6 +62,7 @@ export const signup = createAsyncThunk(
   },
 );
 
+
 export const login = createAsyncThunk(
   "auth/login",
   async (
@@ -71,14 +72,18 @@ export const login = createAsyncThunk(
     try {
       const response = await loginUser(credentials);
 
-      if (
-        response.token
-      ) {
-        setAuthCookie(
-          response.token
-        );
+      // Check whether login response contains user data
+      if (!response.data) {
+        const message = "Login response does not contain user data";
+        toast.error(message);
+        return rejectWithValue(message);
+      }
+
+      // Save token
+      if (response.token) {
+        setAuthCookie(response.token);
       } else {
-        console.error(" Token missing:", {
+        console.error("Token missing:", {
           token: response.token,
         });
       }
@@ -87,20 +92,22 @@ export const login = createAsyncThunk(
 
       return {
         user: {
-          _id: response.data?.id,
-          name: response.data?.name,
-          email: response.data?.email,
-          phone: response.data?.phone,
-          role: response.data?.role,
-          isVerified: response.data?.isVerified,
-          isActive: response.data?.isActive,
+          _id: response.data.id,
+          name: response.data.name,
+          email: response.data.email,
+          phone: response.data.phone,
+          role: response.data.role,
+          isVerified: response.data.isVerified,
+          isActive: response.data.isActive,
         },
         token: response.token,
       };
     } catch (error: any) {
-      const message = error.response?.data?.message || "Login failed";
+      const message =
+        error.response?.data?.message || "Login failed";
 
       toast.error(message);
+
       return rejectWithValue(message);
     }
   },

@@ -1,4 +1,4 @@
-import { Box, Container, Paper, Typography } from '@mui/material'
+import { Box, Container, Paper } from '@mui/material'
 import { Outlet } from 'react-router-dom'
 import UserNavbar from '../components/user/UserNavbar'
 import UserFooter from '../components/user/UserFooter'

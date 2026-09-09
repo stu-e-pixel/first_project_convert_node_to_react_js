@@ -154,8 +154,9 @@ const LoginPage = () => {
             margin="normal"
             autoComplete="current-password"
             required
-            InputProps={{
-              endAdornment: (
+            slotProps={{
+              htmlInput:{
+                endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
                     onClick={() => setShowPassword((prev) => !prev)}
@@ -169,6 +170,8 @@ const LoginPage = () => {
                   </IconButton>
                 </InputAdornment>
               ),
+              }
+              
             }}
           />
 

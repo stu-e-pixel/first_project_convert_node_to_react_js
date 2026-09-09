@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -379,9 +380,11 @@ const UpdateProduct = () => {
               value={formData.price}
               onChange={handleChange}
               placeholder="Enter price"
-              inputProps={{
-                min: 0,
-                step: "0.01",
+              slotProps={{
+                htmlInput: {
+                  min: 0,
+                  step: 0.01,
+                },
               }}
               required
             />

@@ -15,7 +15,7 @@ export interface Product {
   name: string;
   description: string;
   price: string;
-  image: File| null;
+  image:string ;
  color: ("Red" | "Blue" | "Black")[];
   size: ("S" | "M" | "L" | "XL")[];
   createdAt?: string;

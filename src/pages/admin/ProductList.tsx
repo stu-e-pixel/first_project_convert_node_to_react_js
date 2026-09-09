@@ -23,10 +23,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 
 import { useNavigate } from "react-router-dom";
 
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 import {
   fetchProduct,
@@ -37,30 +34,10 @@ const ProductList = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  // =========================================
-  // Products per page
-  // =========================================
-
   const PRODUCTS_PER_PAGE = 4;
 
-  // =========================================
-  // Redux State
-  // =========================================
-
-  const {
-    product,
-    loading,
-    error,
-    totalpage,
-    currentpage,
-    totalproduct,
-  } = useAppSelector(
-    (state: any) => state.crud
-  );
-
-  // =========================================
-  // Search / Filter State
-  // =========================================
+  const { product, loading, error, totalpage, currentpage, totalproduct } =
+    useAppSelector((state: any) => state.crud);
 
   const [searchName, setSearchName] = useState("");
 
@@ -68,45 +45,25 @@ const ProductList = () => {
 
   const [maxPrice, setMaxPrice] = useState("");
 
-  // =========================================
-  // Products
-  // =========================================
-
   const products = Array.isArray(product)
-    ? product.filter(
-        (item: any) => item != null
-      )
+    ? product.filter((item: any) => item != null)
     : [];
-
-  // =========================================
-  // Initial Product Fetch
-  // =========================================
 
   useEffect(() => {
     dispatch(
       fetchProduct({
         page: 1,
         limit: PRODUCTS_PER_PAGE,
-      })
+      }),
     );
   }, [dispatch]);
-
-  // =========================================
-  // Search
-  // =========================================
 
   const handleSearch = () => {
     const name = searchName.trim();
     const min = minPrice.trim();
     const max = maxPrice.trim();
 
-    // Validate minimum and maximum price
-
-    if (
-      min &&
-      max &&
-      Number(min) > Number(max)
-    ) {
+    if (min && max && Number(min) > Number(max)) {
       return;
     }
 
@@ -114,24 +71,16 @@ const ProductList = () => {
       fetchProduct({
         name: name || undefined,
 
-        minprice: min
-          ? Number(min)
-          : undefined,
+        minprice: min ? Number(min) : undefined,
 
-        maxprice: max
-          ? Number(max)
-          : undefined,
+        maxprice: max ? Number(max) : undefined,
 
         page: 1,
 
         limit: PRODUCTS_PER_PAGE,
-      })
+      }),
     );
   };
-
-  // =========================================
-  // Clear Search / Filters
-  // =========================================
 
   const handleClear = () => {
     setSearchName("");
@@ -142,117 +91,70 @@ const ProductList = () => {
       fetchProduct({
         page: 1,
         limit: PRODUCTS_PER_PAGE,
-      })
+      }),
     );
   };
 
-  // =========================================
-  // Pagination
-  // =========================================
-
   const handlePageChange = (
     _event: React.ChangeEvent<unknown>,
-    value: number
+    value: number,
   ) => {
     dispatch(
       fetchProduct({
-        name:
-          searchName.trim() || undefined,
+        name: searchName.trim() || undefined,
 
-        minprice: minPrice.trim()
-          ? Number(minPrice)
-          : undefined,
+        minprice: minPrice.trim() ? Number(minPrice) : undefined,
 
-        maxprice: maxPrice.trim()
-          ? Number(maxPrice)
-          : undefined,
+        maxprice: maxPrice.trim() ? Number(maxPrice) : undefined,
 
         page: value,
 
         limit: PRODUCTS_PER_PAGE,
-      })
+      }),
     );
   };
 
-  // =========================================
-  // Enter Key Search
-  // =========================================
-
-  const handleKeyDown = (
-    event: React.KeyboardEvent
-  ) => {
+  const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "Enter") {
       handleSearch();
     }
   };
 
-  // =========================================
-  // Edit Product
-  // =========================================
-
   const handleEdit = (id: string) => {
-    navigate(
-      `/admin/updateproduct/${id}`
-    );
+    navigate(`/admin/updateproduct/${id}`);
   };
 
-  // =========================================
-  // Delete Product
-  // =========================================
-
-  const handleDelete = async (
-    id: string
-  ) => {
-    const confirmDelete =
-      window.confirm(
-        "Are you sure you want to delete this product?"
-      );
+  const handleDelete = async (id: string) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?",
+    );
 
     if (!confirmDelete) {
       return;
     }
 
     try {
-      await dispatch(
-        deleteExistingProduct(id)
-      ).unwrap();
+      await dispatch(deleteExistingProduct(id)).unwrap();
 
-      // Reload current page
       dispatch(
         fetchProduct({
-          name:
-            searchName.trim() ||
-            undefined,
+          name: searchName.trim() || undefined,
 
-          minprice: minPrice.trim()
-            ? Number(minPrice)
-            : undefined,
+          minprice: minPrice.trim() ? Number(minPrice) : undefined,
 
-          maxprice: maxPrice.trim()
-            ? Number(maxPrice)
-            : undefined,
+          maxprice: maxPrice.trim() ? Number(maxPrice) : undefined,
 
           page: currentpage || 1,
 
           limit: PRODUCTS_PER_PAGE,
-        })
+        }),
       );
     } catch (error) {
-      console.error(
-        "Delete product error:",
-        error
-      );
+      console.error("Delete product error:", error);
     }
   };
 
-  // =========================================
-  // Loading
-  // =========================================
-
-  if (
-    loading &&
-    products.length === 0
-  ) {
+  if (loading && products.length === 0) {
     return (
       <Box
         sx={{
@@ -267,10 +169,6 @@ const ProductList = () => {
     );
   }
 
-  // =========================================
-  // JSX
-  // =========================================
-
   return (
     <Box
       sx={{
@@ -283,16 +181,10 @@ const ProductList = () => {
         },
       }}
     >
-
-      {/* =====================================
-          HEADER
-      ====================================== */}
-
       <Box
         sx={{
           display: "flex",
-          justifyContent:
-            "space-between",
+          justifyContent: "space-between",
 
           alignItems: {
             xs: "flex-start",
@@ -319,23 +211,15 @@ const ProductList = () => {
             Product Management
           </Typography>
 
-          <Typography
-            variant="body2"
-            color="text.secondary"
-          >
-            Manage all products in your
-            store.
+          <Typography variant="body2" color="text.secondary">
+            Manage all products in your store.
           </Typography>
         </Box>
 
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={() =>
-            navigate(
-              "/admin/createproduct"
-            )
-          }
+          onClick={() => navigate("/admin/createproduct")}
           sx={{
             textTransform: "none",
             fontWeight: 600,
@@ -345,10 +229,6 @@ const ProductList = () => {
         </Button>
       </Box>
 
-      {/* =====================================
-          SEARCH AND FILTER
-      ====================================== */}
-
       <Card
         sx={{
           mb: 4,
@@ -357,7 +237,6 @@ const ProductList = () => {
         }}
       >
         <CardContent>
-
           <Typography
             variant="h6"
             sx={{
@@ -376,18 +255,13 @@ const ProductList = () => {
               flexWrap: "wrap",
             }}
           >
-
             {/* Search Name */}
 
             <TextField
               label="Product Name"
               placeholder="Search by name..."
               value={searchName}
-              onChange={(event) =>
-                setSearchName(
-                  event.target.value
-                )
-              }
+              onChange={(event) => setSearchName(event.target.value)}
               onKeyDown={handleKeyDown}
               sx={{
                 flex: 1,
@@ -402,8 +276,7 @@ const ProductList = () => {
                     <SearchIcon
                       sx={{
                         mr: 1,
-                        color:
-                          "text.secondary",
+                        color: "text.secondary",
                       }}
                     />
                   ),
@@ -411,17 +284,11 @@ const ProductList = () => {
               }}
             />
 
-            {/* Minimum Price */}
-
             <TextField
               label="Min Price"
               type="number"
               value={minPrice}
-              onChange={(event) =>
-                setMinPrice(
-                  event.target.value
-                )
-              }
+              onChange={(event) => setMinPrice(event.target.value)}
               onKeyDown={handleKeyDown}
               slotProps={{
                 htmlInput: {
@@ -435,18 +302,12 @@ const ProductList = () => {
                 },
               }}
             />
-
-            {/* Maximum Price */}
 
             <TextField
               label="Max Price"
               type="number"
               value={maxPrice}
-              onChange={(event) =>
-                setMaxPrice(
-                  event.target.value
-                )
-              }
+              onChange={(event) => setMaxPrice(event.target.value)}
               onKeyDown={handleKeyDown}
               slotProps={{
                 htmlInput: {
@@ -460,8 +321,6 @@ const ProductList = () => {
                 },
               }}
             />
-
-            {/* Search Button */}
 
             <Button
               variant="contained"
@@ -475,8 +334,6 @@ const ProductList = () => {
             >
               Search
             </Button>
-
-            {/* Clear Button */}
 
             <Button
               variant="outlined"
@@ -492,29 +349,19 @@ const ProductList = () => {
             </Button>
           </Box>
 
-          {/* Price Error */}
-
-          {minPrice &&
-            maxPrice &&
-            Number(minPrice) >
-              Number(maxPrice) && (
-              <Typography
-                color="error"
-                variant="body2"
-                sx={{
-                  mt: 2,
-                }}
-              >
-                Minimum price cannot be
-                greater than maximum price.
-              </Typography>
-            )}
+          {minPrice && maxPrice && Number(minPrice) > Number(maxPrice) && (
+            <Typography
+              color="error"
+              variant="body2"
+              sx={{
+                mt: 2,
+              }}
+            >
+              Minimum price cannot be greater than maximum price.
+            </Typography>
+          )}
         </CardContent>
       </Card>
-
-      {/* =====================================
-          ERROR
-      ====================================== */}
 
       {error && (
         <Box
@@ -525,40 +372,20 @@ const ProductList = () => {
             backgroundColor: "#ffebee",
           }}
         >
-          <Typography color="error">
-            {error}
+          <Typography color="error">{error}</Typography>
+        </Box>
+      )}
+
+      {!loading && products.length > 0 && (
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="body2" color="text.secondary">
+            Showing <strong>{products.length}</strong> products
+            {totalproduct !== undefined && ` of ${totalproduct} products`}
           </Typography>
         </Box>
       )}
 
-      {/* =====================================
-          PRODUCT COUNT
-      ====================================== */}
-
-      {!loading &&
-        products.length > 0 && (
-          <Box sx={{ mb: 2 }}>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-            >
-              Showing{" "}
-              <strong>
-                {products.length}
-              </strong>{" "}
-              products
-              {totalproduct !== undefined &&
-                ` of ${totalproduct} products`}
-            </Typography>
-          </Box>
-        )}
-
-      {/* =====================================
-          NO PRODUCT
-      ====================================== */}
-
-      {!loading &&
-      products.length === 0 ? (
+      {!loading && products.length === 0 ? (
         <Card
           sx={{
             borderRadius: 3,
@@ -587,8 +414,7 @@ const ProductList = () => {
                 mb: 3,
               }}
             >
-              Try changing your search
-              or price filters.
+              Try changing your search or price filters.
             </Typography>
 
             <Button
@@ -605,10 +431,6 @@ const ProductList = () => {
         </Card>
       ) : (
         <>
-          {/* =================================
-              PRODUCT GRID
-          ================================== */}
-
           <Box
             sx={{
               display: "grid",
@@ -623,333 +445,248 @@ const ProductList = () => {
               gap: 3,
             }}
           >
-            {products.map(
-              (item: any) => {
-                if (!item) {
-                  return null;
-                }
+            {products.map((item: any) => {
+              if (!item) {
+                return null;
+              }
 
-                return (
-                  <Card
-                    key={item._id}
+              return (
+                <Card
+                  key={item._id}
+                  sx={{
+                    borderRadius: 3,
+                    overflow: "hidden",
+
+                    display: "flex",
+                    flexDirection: "column",
+
+                    height: "100%",
+
+                    boxShadow: 2,
+
+                    transition: "0.2s",
+
+                    "&:hover": {
+                      transform: "translateY(-4px)",
+                      boxShadow: 5,
+                    },
+                  }}
+                >
+                  <Box
                     sx={{
-                      borderRadius: 3,
-                      overflow: "hidden",
-
-                      display: "flex",
-                      flexDirection:
-                        "column",
-
-                      height: "100%",
-
-                      boxShadow: 2,
-
-                      transition:
-                        "0.2s",
-
-                      "&:hover": {
-                        transform:
-                          "translateY(-4px)",
-                        boxShadow: 5,
-                      },
+                      width: "100%",
+                      height: 230,
+                      backgroundColor: "#f5f5f5",
                     }}
                   >
+                    {item?.image ? (
+                      <CardMedia
+                        component="img"
+                        image={item.image}
+                        alt={item.name || "Product"}
+                        sx={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                        onError={(event) => {
+                          event.currentTarget.style.display = "none";
+                        }}
+                      />
+                    ) : (
+                      <Box
+                        sx={{
+                          width: "100%",
+                          height: "100%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Typography color="text.secondary">No Image</Typography>
+                      </Box>
+                    )}
+                  </Box>
 
-                    {/* Product Image */}
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      flexGrow: 1,
+                    }}
+                  >
+                    {/* Name */}
+
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 700,
+                        mb: 1,
+                      }}
+                    >
+                      {item?.name || "Unnamed Product"}
+                    </Typography>
+
+                    {/* Description */}
+
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{
+                        mb: 2,
+
+                        display: "-webkit-box",
+
+                        WebkitLineClamp: 2,
+
+                        WebkitBoxOrient: "vertical",
+
+                        overflow: "hidden",
+                      }}
+                    >
+                      {item?.description || "No description available"}
+                    </Typography>
+
+                    {/* Price */}
+
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 700,
+                        mb: 2,
+                      }}
+                    >
+                      ₹{item?.price ?? 0}
+                    </Typography>
+
+                    {/* Colors */}
+
+                    {Array.isArray(item?.color) && item.color.length > 0 && (
+                      <Box
+                        sx={{
+                          mb: 2,
+                        }}
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontWeight: 600,
+                            mb: 0.5,
+                          }}
+                        >
+                          Colors
+                        </Typography>
+
+                        <Box
+                          sx={{
+                            display: "flex",
+                            gap: 0.5,
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          {item.color.map((color: string, index: number) => (
+                            <Chip
+                              key={`${color}-${index}`}
+                              label={color}
+                              size="small"
+                            />
+                          ))}
+                        </Box>
+                      </Box>
+                    )}
+
+                    {/* Sizes */}
+
+                    {Array.isArray(item?.size) && item.size.length > 0 && (
+                      <Box
+                        sx={{
+                          mb: 3,
+                        }}
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontWeight: 600,
+                            mb: 0.5,
+                          }}
+                        >
+                          Sizes
+                        </Typography>
+
+                        <Box
+                          sx={{
+                            display: "flex",
+                            gap: 0.5,
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          {item.size.map((size: string, index: number) => (
+                            <Chip
+                              key={`${size}-${index}`}
+                              label={size}
+                              size="small"
+                              variant="outlined"
+                            />
+                          ))}
+                        </Box>
+                      </Box>
+                    )}
+
+                    {/* Buttons */}
 
                     <Box
                       sx={{
-                        width: "100%",
-                        height: 230,
-                        backgroundColor:
-                          "#f5f5f5",
-                      }}
-                    >
-                      {item?.image ? (
-                        <CardMedia
-                          component="img"
-                          image={item.image}
-                          alt={
-                            item.name ||
-                            "Product"
-                          }
-                          sx={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit:
-                              "cover",
-                          }}
-                          onError={(
-                            event
-                          ) => {
-                            event.currentTarget.style.display =
-                              "none";
-                          }}
-                        />
-                      ) : (
-                        <Box
-                          sx={{
-                            width: "100%",
-                            height: "100%",
-                            display: "flex",
-                            alignItems:
-                              "center",
-                            justifyContent:
-                              "center",
-                          }}
-                        >
-                          <Typography
-                            color="text.secondary"
-                          >
-                            No Image
-                          </Typography>
-                        </Box>
-                      )}
-                    </Box>
-
-                    {/* Product Details */}
-
-                    <CardContent
-                      sx={{
                         display: "flex",
-                        flexDirection:
-                          "column",
-                        flexGrow: 1,
+                        gap: 1,
+                        mt: "auto",
                       }}
                     >
+                      {/* Edit */}
 
-                      {/* Name */}
-
-                      <Typography
-                        variant="h6"
+                      <Button
+                        fullWidth
+                        variant="outlined"
+                        startIcon={<EditIcon />}
+                        onClick={() => handleEdit(item._id)}
                         sx={{
-                          fontWeight: 700,
-                          mb: 1,
+                          textTransform: "none",
                         }}
                       >
-                        {item?.name ||
-                          "Unnamed Product"}
-                      </Typography>
+                        Edit
+                      </Button>
 
-                      {/* Description */}
-
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
+                      <Button
+                        fullWidth
+                        variant="outlined"
+                        color="error"
+                        startIcon={<DeleteIcon />}
+                        onClick={() => handleDelete(item._id)}
                         sx={{
-                          mb: 2,
-
-                          display:
-                            "-webkit-box",
-
-                          WebkitLineClamp: 2,
-
-                          WebkitBoxOrient:
-                            "vertical",
-
-                          overflow:
-                            "hidden",
+                          textTransform: "none",
                         }}
                       >
-                        {item?.description ||
-                          "No description available"}
-                      </Typography>
-
-                      {/* Price */}
-
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          fontWeight: 700,
-                          mb: 2,
-                        }}
-                      >
-                        ₹{item?.price ?? 0}
-                      </Typography>
-
-                      {/* Colors */}
-
-                      {Array.isArray(
-                        item?.color
-                      ) &&
-                        item.color.length >
-                          0 && (
-                          <Box
-                            sx={{
-                              mb: 2,
-                            }}
-                          >
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                fontWeight:
-                                  600,
-                                mb: 0.5,
-                              }}
-                            >
-                              Colors
-                            </Typography>
-
-                            <Box
-                              sx={{
-                                display:
-                                  "flex",
-                                gap: 0.5,
-                                flexWrap:
-                                  "wrap",
-                              }}
-                            >
-                              {item.color.map(
-                                (
-                                  color: string,
-                                  index: number
-                                ) => (
-                                  <Chip
-                                    key={`${color}-${index}`}
-                                    label={
-                                      color
-                                    }
-                                    size="small"
-                                  />
-                                )
-                              )}
-                            </Box>
-                          </Box>
-                        )}
-
-                      {/* Sizes */}
-
-                      {Array.isArray(
-                        item?.size
-                      ) &&
-                        item.size.length >
-                          0 && (
-                          <Box
-                            sx={{
-                              mb: 3,
-                            }}
-                          >
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                fontWeight:
-                                  600,
-                                mb: 0.5,
-                              }}
-                            >
-                              Sizes
-                            </Typography>
-
-                            <Box
-                              sx={{
-                                display:
-                                  "flex",
-                                gap: 0.5,
-                                flexWrap:
-                                  "wrap",
-                              }}
-                            >
-                              {item.size.map(
-                                (
-                                  size: string,
-                                  index: number
-                                ) => (
-                                  <Chip
-                                    key={`${size}-${index}`}
-                                    label={
-                                      size
-                                    }
-                                    size="small"
-                                    variant="outlined"
-                                  />
-                                )
-                              )}
-                            </Box>
-                          </Box>
-                        )}
-
-                      {/* Buttons */}
-
-                      <Box
-                        sx={{
-                          display: "flex",
-                          gap: 1,
-                          mt: "auto",
-                        }}
-                      >
-
-                        {/* Edit */}
-
-                        <Button
-                          fullWidth
-                          variant="outlined"
-                          startIcon={
-                            <EditIcon />
-                          }
-                          onClick={() =>
-                            handleEdit(
-                              item._id
-                            )
-                          }
-                          sx={{
-                            textTransform:
-                              "none",
-                          }}
-                        >
-                          Edit
-                        </Button>
-
-                        {/* Delete */}
-
-                        <Button
-                          fullWidth
-                          variant="outlined"
-                          color="error"
-                          startIcon={
-                            <DeleteIcon />
-                          }
-                          onClick={() =>
-                            handleDelete(
-                              item._id
-                            )
-                          }
-                          sx={{
-                            textTransform:
-                              "none",
-                          }}
-                        >
-                          Delete
-                        </Button>
-                      </Box>
-                    </CardContent>
-                  </Card>
-                );
-              }
-            )}
+                        Delete
+                      </Button>
+                    </Box>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </Box>
-
-          {/* =================================
-              PAGINATION
-          ================================== */}
 
           {totalpage > 1 && (
             <Box
               sx={{
                 display: "flex",
-                justifyContent:
-                  "center",
+                justifyContent: "center",
                 mt: 5,
                 mb: 3,
               }}
             >
               <Pagination
                 count={totalpage}
-                page={
-                  currentpage || 1
-                }
-                onChange={
-                  handlePageChange
-                }
+                page={currentpage || 1}
+                onChange={handlePageChange}
                 color="primary"
                 size="large"
                 showFirstButton
@@ -960,31 +697,22 @@ const ProductList = () => {
         </>
       )}
 
-      {/* =====================================
-          LOADING OVERLAY
-      ====================================== */}
-
-      {loading &&
-        products.length > 0 && (
-          <Box
-            sx={{
-              position: "fixed",
-              inset: 0,
-              backgroundColor:
-                "rgba(255,255,255,0.45)",
-              display: "flex",
-              alignItems:
-                "center",
-              justifyContent:
-                "center",
-              zIndex: 999,
-              pointerEvents:
-                "none",
-            }}
-          >
-            <CircularProgress />
-          </Box>
-        )}
+      {loading && products.length > 0 && (
+        <Box
+          sx={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(255,255,255,0.45)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 999,
+            pointerEvents: "none",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
     </Box>
   );
 };

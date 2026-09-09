@@ -30,9 +30,7 @@ const CreateProduct = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { loading, error } = useAppSelector(
-    (state) => state.crud
-  );
+  const { loading, error } = useAppSelector((state) => state.crud);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -44,12 +42,9 @@ const CreateProduct = () => {
 
   const [image, setImage] = useState<File | null>(null);
 
-  const [validationError, setValidationError] =
-    useState("");
+  const [validationError, setValidationError] = useState("");
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
 
@@ -61,9 +56,7 @@ const CreateProduct = () => {
     setValidationError("");
   };
 
-  const handleColorChange = (
-    e: any
-  ) => {
+  const handleColorChange = (e: any) => {
     setFormData((prev) => ({
       ...prev,
       color: e.target.value,
@@ -72,9 +65,7 @@ const CreateProduct = () => {
     setValidationError("");
   };
 
-  const handleSizeChange = (
-    e: any
-  ) => {
+  const handleSizeChange = (e: any) => {
     setFormData((prev) => ({
       ...prev,
       size: e.target.value,
@@ -83,10 +74,7 @@ const CreateProduct = () => {
     setValidationError("");
   };
 
-
-  const handleImageChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
     if (file) {
@@ -94,58 +82,34 @@ const CreateProduct = () => {
       setValidationError("");
     }
   };
-  
 
-  
-  const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const {
-      name,
-      description,
-      price,
-      color,
-      size,
-    } = formData;
+    const { name, description, price, color, size } = formData;
 
-    if (
-      !name.trim() ||
-      !description.trim() ||
-      !price.trim()
-    ) {
-      setValidationError(
-        "Please fill in all required fields."
-      );
+    if (!name.trim() || !description.trim() || !price.trim()) {
+      setValidationError("Please fill in all required fields.");
       return;
     }
 
     if (Number(price) <= 0) {
-      setValidationError(
-        "Price must be greater than 0."
-      );
+      setValidationError("Price must be greater than 0.");
       return;
     }
 
     if (color.length === 0) {
-      setValidationError(
-        "Please select at least one color."
-      );
+      setValidationError("Please select at least one color.");
       return;
     }
 
     if (size.length === 0) {
-      setValidationError(
-        "Please select at least one size."
-      );
+      setValidationError("Please select at least one size.");
       return;
     }
 
     if (!image) {
-      setValidationError(
-        "Please select a product image."
-      );
+      setValidationError("Please select a product image.");
       return;
     }
 
@@ -158,15 +122,12 @@ const CreateProduct = () => {
           image: image,
           color: color,
           size: size,
-        })
+        }),
       ).unwrap();
 
       navigate("/admin/allproduct");
     } catch (error) {
-      console.error(
-        "Create product error:",
-        error
-      );
+      console.error("Create product error:", error);
     }
   };
 
@@ -194,24 +155,14 @@ const CreateProduct = () => {
             p: { xs: 2, md: 4 },
           }}
         >
-          
           <Box sx={{ mb: 4 }}>
-            <Typography
-              
-              sx={{ mb: 1 }}
-            >
-              Create Product
-            </Typography>
+            <Typography sx={{ mb: 1 }}>Create Product</Typography>
 
-            <Typography
-              variant="body2"
-              color="text.secondary"
-            >
+            <Typography variant="body2" color="text.secondary">
               Add a new product to your store.
             </Typography>
           </Box>
 
-          
           {(validationError || error) && (
             <Box
               sx={{
@@ -228,7 +179,6 @@ const CreateProduct = () => {
             </Box>
           )}
 
-          
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -238,7 +188,6 @@ const CreateProduct = () => {
               gap: 2.5,
             }}
           >
-
             <TextField
               fullWidth
               label="Product Name"
@@ -248,7 +197,6 @@ const CreateProduct = () => {
               placeholder="Enter product name"
               required
             />
-
 
             <TextField
               fullWidth
@@ -262,7 +210,6 @@ const CreateProduct = () => {
               required
             />
 
-            
             <TextField
               fullWidth
               label="Price"
@@ -271,14 +218,15 @@ const CreateProduct = () => {
               value={formData.price}
               onChange={handleChange}
               placeholder="Enter price"
-              inputProps={{
-                min: 0,
-                step: "0.01",
-              }}
               required
+              slotProps={{
+                htmlInput: {
+                  min: 0,
+                  step: 0.01,
+                },
+              }}
             />
 
-            
             <FormControl fullWidth>
               <InputLabel>Color</InputLabel>
 
@@ -286,9 +234,7 @@ const CreateProduct = () => {
                 multiple
                 value={formData.color}
                 onChange={handleColorChange}
-                input={
-                  <OutlinedInput label="Color" />
-                }
+                input={<OutlinedInput label="Color" />}
                 renderValue={(selected) => (
                   <Box
                     sx={{
@@ -297,30 +243,20 @@ const CreateProduct = () => {
                       flexWrap: "wrap",
                     }}
                   >
-                    {(selected as string[]).map(
-                      (value) => (
-                        <Chip
-                          key={value}
-                          label={value}
-                          size="small"
-                        />
-                      )
-                    )}
+                    {(selected as string[]).map((value) => (
+                      <Chip key={value} label={value} size="small" />
+                    ))}
                   </Box>
                 )}
               >
                 {colors.map((color) => (
-                  <MenuItem
-                    key={color}
-                    value={color}
-                  >
+                  <MenuItem key={color} value={color}>
                     {color}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
 
-            
             <FormControl fullWidth>
               <InputLabel>Size</InputLabel>
 
@@ -328,9 +264,7 @@ const CreateProduct = () => {
                 multiple
                 value={formData.size}
                 onChange={handleSizeChange}
-                input={
-                  <OutlinedInput label="Size" />
-                }
+                input={<OutlinedInput label="Size" />}
                 renderValue={(selected) => (
                   <Box
                     sx={{
@@ -339,30 +273,20 @@ const CreateProduct = () => {
                       flexWrap: "wrap",
                     }}
                   >
-                    {(selected as string[]).map(
-                      (value) => (
-                        <Chip
-                          key={value}
-                          label={value}
-                          size="small"
-                        />
-                      )
-                    )}
+                    {(selected as string[]).map((value) => (
+                      <Chip key={value} label={value} size="small" />
+                    ))}
                   </Box>
                 )}
               >
                 {sizes.map((size) => (
-                  <MenuItem
-                    key={size}
-                    value={size}
-                  >
+                  <MenuItem key={size} value={size}>
                     {size}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
 
-            
             <Box sx={{ mt: 1 }}>
               <Typography
                 variant="body2"
@@ -384,9 +308,7 @@ const CreateProduct = () => {
                   textTransform: "none",
                 }}
               >
-                {image
-                  ? image.name
-                  : "Choose Product Image"}
+                {image ? image.name : "Choose Product Image"}
 
                 <input
                   type="file"
@@ -410,7 +332,6 @@ const CreateProduct = () => {
               )}
             </Box>
 
-            
             {image && (
               <Box
                 sx={{
@@ -438,7 +359,6 @@ const CreateProduct = () => {
               </Box>
             )}
 
-            
             <Box
               sx={{
                 display: "flex",
@@ -475,10 +395,7 @@ const CreateProduct = () => {
                 }}
               >
                 {loading ? (
-                  <CircularProgress
-                    size={24}
-                    color="inherit"
-                  />
+                  <CircularProgress size={24} color="inherit" />
                 ) : (
                   "Create Product"
                 )}
@@ -492,4 +409,3 @@ const CreateProduct = () => {
 };
 
 export default CreateProduct;
-
