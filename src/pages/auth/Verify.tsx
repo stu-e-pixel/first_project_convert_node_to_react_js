@@ -85,14 +85,11 @@ console.log(
 
   useEffect(() => {
   console.log("verification email", verificationEmail);
-
-  // Verification already completed হলে আর redirect করবে না
   if (isVerified) {
     return;
   }
 
   if (!verificationEmail) {
-    toast.error("No verification email found. Please sign up first.");
     navigate("/register");
     return;
   }

@@ -56,7 +56,7 @@ api.interceptors.request.use(
   },
 
   (error) => {
-    console.error("❌ Request Error:", error);
+    console.error(" Request Error:", error);
     return Promise.reject(error);
   }
 );
@@ -71,7 +71,7 @@ api.interceptors.response.use(
   },
 
   async (error: AxiosError) => {
-    console.error("❌ Response Error:", {
+    console.error(" Response Error:", {
       status: error.response?.status,
       data: error.response?.data,
       url: error.config?.url,
@@ -133,7 +133,7 @@ api.interceptors.response.use(
       return api(originalRequest);
     } catch (refreshError) {
       console.error(
-        "❌ Token refresh failed:",
+        " Token refresh failed:",
         refreshError
       );
 
